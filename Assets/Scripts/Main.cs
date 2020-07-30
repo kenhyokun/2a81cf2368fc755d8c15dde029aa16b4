@@ -12,6 +12,10 @@ using UnityEngine;
 
 /*
   TODO [Kevin]:
+
+    game refference: 
+    https://play.google.com/store/apps/details?id=com.emagssob.big2&hl=en_US
+
     - All common Big 2 rules are well implemented.
     https://www.pagat.com/climbing/bigtwo.html
     ++ a standard 52 card pack is used. 
@@ -59,20 +63,24 @@ public class Main : MonoBehaviour
     Player p3;
     Player p4;
 
+    public GameObject card_game_object;
+    public GameObject p1_deck;
+    public GameObject p2_deck;
+    public GameObject p3_deck;
+    public GameObject p4_deck;
+
     void InitDeck(){
 	for(int j = 0; j < 4; j++){
 	    for(int i = 0; i < 13; i++){
 		Card card = new Card(j, i + 1, i);
 		card_deck.Add(card);
-		// Debug.Log(card.image_source);
 	    } // i
 	} // j
     }
 
     void RandCard(){ // give 13 random card to each player
-	// int count = 0;
 	do{
-	    int rand_index = Random.Range(0, card_deck.Count - 1);
+	    int rand_index = Random.Range(0, card_deck.Count);
 
 	    if(p1.card_on_hand.Count < 13){
 		p1.card_on_hand.Add(card_deck[rand_index]);
@@ -92,14 +100,50 @@ public class Main : MonoBehaviour
 	    }
 
 	    card_deck.RemoveAt(rand_index);
-	    // count++;
-	    // Debug.Log("rand remove" + count.ToString());
 	}
 	while(card_deck.Count > 0);
-	// Debug.Log("end rand remove");
+    }
+
+    void InstantiateCard(Player player, GameObject deck, float offset_x = 0.7f){ // instancing card_game_object to each player
+	for(int i = 0; i < player.card_on_hand.Count; i++){
+
+	    GameObject card_inst =
+		GameObject.Instantiate(card_game_object);
+
+	    card_inst.transform.position =
+		new Vector3(deck.transform.position.x + (offset_x * i),
+			    deck.transform.position.y,
+			    deck.transform.position.z);
+
+	    card_inst.transform.name = player.player_name + " " +
+		player.card_on_hand[i].card_name;
+
+	    if(player.player_name == "Player1"){
+		card_inst.transform.tag = "player_card";
+		card_inst.GetComponent<Card_Game_Object>().is_open = true;
+	    }
+	    else{
+		card_inst.transform.tag = "com_card";
+	    }
+
+	    card_inst.GetComponent<Card_Game_Object>().
+		GetComponent<SpriteRenderer>().sortingOrder = i; 
+
+	    card_inst.GetComponent<Card_Game_Object>().card_data =
+		player.card_on_hand[i];
+
+	    card_inst.transform.parent = deck.transform;
+	}
     }
         
     void Start(){
+
+	card_game_object = GameObject.Find("CardGameObject");
+	p1_deck = GameObject.Find("Player1Deck");
+	p2_deck = GameObject.Find("Player2Deck");
+	p3_deck = GameObject.Find("Player3Deck");
+	p4_deck = GameObject.Find("Player4Deck");
+
 	InitDeck();
 
 	p1 = new Player("Player1");
@@ -108,6 +152,14 @@ public class Main : MonoBehaviour
 	p4 = new Player("COM3");
 
 	RandCard();
+	InstantiateCard(p1, p1_deck);
+	InstantiateCard(p2, p2_deck, 0.4f);
+	InstantiateCard(p3, p3_deck);
+	InstantiateCard(p4, p4_deck, 0.4f);
+
+	// vertical orientation arrange
+	p2_deck.transform.Rotate(0.0f, 0.0f, 90.0f);
+	p4_deck.transform.Rotate(0.0f, 0.0f, -90.0f);
 
 	turn_state = TurnState.P1;
     }

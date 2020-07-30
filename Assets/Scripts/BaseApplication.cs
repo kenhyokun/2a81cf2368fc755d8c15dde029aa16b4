@@ -10,6 +10,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+  NOTE [Kevin]:
+  just class/script that I used to set basic parameter in application 
+  that share in common between scenes
+*/
+
 public class BaseApplication : MonoBehaviour
 {
     void Start(){

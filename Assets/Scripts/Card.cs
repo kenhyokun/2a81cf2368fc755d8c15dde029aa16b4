@@ -48,6 +48,7 @@ public class Card
     public string card_shape_str {get;}
     public string card_index_str {get;}
     public string image_source {get;}
+    public string card_name{get;}
 
     public Card(int _card_shape, int _card_value, int _card_index){
 	card_shape = _card_shape;
@@ -72,6 +73,48 @@ public class Card
 		card_shape_str = "diamond";
     		break;
     	}
+
+	switch(card_index){
+	    case 0:
+		card_name = card_shape_str + "_" + "3";
+		break;
+	    case 1:
+		card_name = card_shape_str + "_" + "4";
+		break;
+	    case 2:
+		card_name = card_shape_str + "_" + "5";
+		break;
+	    case 3:
+		card_name = card_shape_str + "_" + "6";
+		break;
+	    case 4:
+		card_name = card_shape_str + "_" + "7";
+		break;
+	    case 5:
+		card_name = card_shape_str + "_" + "8";
+		break;
+	    case 6:
+		card_name = card_shape_str + "_" + "9";
+		break;
+	    case 7:
+		card_name = card_shape_str + "_" + "10";
+		break;
+	    case 8:
+		card_name = card_shape_str + "_" + "J";
+		break;
+	    case 9:
+		card_name = card_shape_str + "_" + "Q";
+		break;
+	    case 10:
+		card_name = card_shape_str + "_" + "K";
+		break;
+	    case 11:
+		card_name = card_shape_str + "_" + "A";
+		break;
+	    case 12:
+		card_name = card_shape_str + "_" + "2";
+		break;
+	}
 
 	card_index_str = card_index.ToString();
 	image_source = "images/cards/" + card_shape_str + "/" + card_index_str;
