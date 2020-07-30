@@ -37,10 +37,91 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-    void Start()
-    {
-	Screen.SetResolution(1280, 720, false); 
+    enum TurnState{
+	P1,
+	P2,
+	P3,
+	P4
     }
 
-    void Update(){}
+    enum ActState{ // action state -> what we do on one turn...
+	ACT_THROW,
+	ACT_PASS,
+	ACT_END
+    }
+
+    TurnState turn_state;
+    ActState act_state;
+    List<Card> card_deck = new List<Card>();
+
+    Player p1;
+    Player p2;
+    Player p3;
+    Player p4;
+
+    void InitDeck(){
+	for(int j = 0; j < 4; j++){
+	    for(int i = 0; i < 13; i++){
+		Card card = new Card(j, i + 1, i);
+		card_deck.Add(card);
+		// Debug.Log(card.image_source);
+	    } // i
+	} // j
+    }
+
+    void RandCard(){ // give 13 random card to each player
+	// int count = 0;
+	do{
+	    int rand_index = Random.Range(0, card_deck.Count - 1);
+
+	    if(p1.card_on_hand.Count < 13){
+		p1.card_on_hand.Add(card_deck[rand_index]);
+		Debug.Log(p1.player_name + " -> " + card_deck[rand_index].image_source);
+	    }
+	    else if(p2.card_on_hand.Count < 13){
+		p2.card_on_hand.Add(card_deck[rand_index]);
+		Debug.Log(p2.player_name + " -> " + card_deck[rand_index].image_source);
+	    }
+	    else if(p3.card_on_hand.Count < 13){
+		p3.card_on_hand.Add(card_deck[rand_index]);
+		Debug.Log(p3.player_name + " -> " + card_deck[rand_index].image_source);
+	    }
+	    else if (p4.card_on_hand.Count < 13){
+		p4.card_on_hand.Add(card_deck[rand_index]);
+		Debug.Log(p4.player_name + " -> " + card_deck[rand_index].image_source);
+	    }
+
+	    card_deck.RemoveAt(rand_index);
+	    // count++;
+	    // Debug.Log("rand remove" + count.ToString());
+	}
+	while(card_deck.Count > 0);
+	// Debug.Log("end rand remove");
+    }
+        
+    void Start(){
+	InitDeck();
+
+	p1 = new Player("Player1");
+	p2 = new Player("COM1");
+	p3 = new Player("COM2");
+	p4 = new Player("COM3");
+
+	RandCard();
+
+	turn_state = TurnState.P1;
+    }
+
+    void Update(){
+	switch(turn_state){
+	    case TurnState.P1:
+		break;
+	    case TurnState.P2:
+		break;
+	    case TurnState.P3:
+		break;
+	    case TurnState.P4:
+		break;
+	}
+    }
 }
