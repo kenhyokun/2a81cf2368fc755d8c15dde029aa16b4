@@ -161,6 +161,77 @@ public class Main : MonoBehaviour
 	    card_inst.transform.parent = deck.transform;
 	}
     }
+
+    // int card_check_count;
+    int start_index;
+    int last_index;
+
+    void CheckCardOnHand(Player player,
+			 int curr_count = 0,
+			 int last_value = 0){ // recursive function to get card set and its index
+
+	int curr_value = 0; 
+
+	if(curr_count < player.card_on_hand.Count){
+
+	    curr_value = player.card_on_hand[curr_count].card_value;
+
+	    if(curr_count == 0){
+
+		Debug.Log(curr_count);
+
+		start_index = curr_count;
+		last_index = curr_count;
+		CheckCardOnHand(player, curr_count + 1, curr_value); 
+	    }
+	    else{
+
+		if(last_value == curr_value){
+
+		    Debug.Log(curr_count);
+
+		    last_index = curr_count;
+		    CheckCardOnHand(player, curr_count + 1, curr_value); 
+		}
+		else{ // cut here...
+
+		    int card_set = last_index - start_index + 1;
+		    player.SetCardSet(card_set, start_index, last_index);
+
+		    Debug.Log(curr_count);
+
+		    Debug.Log(start_index + " " + last_index + " -> " + card_set);
+
+		    start_index = curr_count;
+		    last_index = curr_count;
+
+		    CheckCardOnHand(player, curr_count + 1, curr_value); 
+
+		}
+
+	    }
+
+	    // Debug.Log(curr_count);
+	}
+	else{
+
+	    int card_set = last_index - start_index + 1;
+	    player.SetCardSet(card_set, start_index, last_index);
+
+	    Debug.Log(curr_count);
+
+	    Debug.Log(start_index + " " + last_index + " -> " + card_set);
+
+	    start_index = 0;
+	    last_index = 0;
+
+	    Debug.Log("total card set " + player.GetTotalCardSet());
+	    Debug.Log("single card set " + player.single_set_list.Count);
+	    Debug.Log("pair card set " + player.pair_set_list.Count);
+	    Debug.Log("triple card set " + player.triple_set_list.Count);
+	}
+
+    }
         
     // this function we call at Card_Game_Object script/class
     public void AddCardToSelectionList(GameObject card_game_object){
@@ -182,18 +253,11 @@ public class Main : MonoBehaviour
     }
     // this function we call at Card_Game_Object script/class
     
-    // void CheckCardSet(){ // check card set/suits single, pair, triple/three of kind etc
-    // 	int selected_count = player_selected_card_list.Count;
-    // 	if(selected_count > 0){
-    // 	}
-    // }
-    
-    bool IsOnSet(int max_count,
+    bool is_on_set; 
+    void IsOnSet(int max_count,
 		 int curr_count = 0,
-		 int last_value = 0){ // check card set/suits single, pair, triple/three of kind etc
+		 int last_value = 0){ // recursive function to check card set/suits pair, triple/three of kind etc
 
-	bool return_value = false;
-	
 	int curr_value =
 	    player_selected_card_list[curr_count].
 	    GetComponent<Card_Game_Object>().card_data.card_value;
@@ -218,21 +282,17 @@ public class Main : MonoBehaviour
 	}  
 	else{
 
-	    return_value = true;
 	    Debug.Log(curr_count + ", " + max_count + " -> " + last_value + ", " + curr_value);
 	     if(last_value == curr_value){
 	     	Debug.Log("on set...");
-	     	// return true;
-		return_value = true;
+		is_on_set = true;
 	     }
 	     else{
 	     	Debug.Log("not on set...");
-	     	// return false;
-		return_value = false;
+		is_on_set = false;
 	     }
-	     // return_value = (last_value == curr_value);
 	}
-	return return_value;
+
     }
 
 
@@ -246,7 +306,8 @@ public class Main : MonoBehaviour
 		Debug.Log("single");
 	    }
 	    else if(selected_count == 2){
-		if(IsOnSet(2)){
+		IsOnSet(2);
+		if(is_on_set){
 		    Debug.Log("pair");
 		}
 		else{
@@ -254,8 +315,9 @@ public class Main : MonoBehaviour
 		}
 	    }
 	    else if(selected_count == 3){
-		if(IsOnSet(3)){
-		    Debug.Log("pair");
+		IsOnSet(3);
+		if(is_on_set){
+		    Debug.Log("triples");
 		}
 		else{
 		    Debug.Log("just nothing...");
@@ -291,6 +353,8 @@ public class Main : MonoBehaviour
 	SortCardByValue(p2);
 	SortCardByValue(p3);
 	SortCardByValue(p4);
+
+	CheckCardOnHand(p1);
 
 	InstantiateCard(p1, p1_deck);
 	InstantiateCard(p2, p2_deck, 0.4f);
