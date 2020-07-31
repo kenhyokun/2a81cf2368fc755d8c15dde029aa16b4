@@ -69,6 +69,13 @@ public class Main : MonoBehaviour
     public GameObject p3_deck;
     public GameObject p4_deck;
 
+    public List<GameObject> player_selected_card_list =
+	new List<GameObject>(); // list that contain player selected card (game object). select or deselect card will affect this list
+
+    public static Main GetMain(){ // static function to get main component from main game object, so we dont need create main instance on other script/class when we need it
+	return GameObject.Find("Main").GetComponent<Main>();
+    }
+
     void InitDeck(){
 	for(int j = 0; j < 4; j++){
 	    for(int i = 0; i < 13; i++){
@@ -84,24 +91,39 @@ public class Main : MonoBehaviour
 
 	    if(p1.card_on_hand.Count < 13){
 		p1.card_on_hand.Add(card_deck[rand_index]);
-		Debug.Log(p1.player_name + " -> " + card_deck[rand_index].image_source);
 	    }
 	    else if(p2.card_on_hand.Count < 13){
 		p2.card_on_hand.Add(card_deck[rand_index]);
-		Debug.Log(p2.player_name + " -> " + card_deck[rand_index].image_source);
 	    }
 	    else if(p3.card_on_hand.Count < 13){
 		p3.card_on_hand.Add(card_deck[rand_index]);
-		Debug.Log(p3.player_name + " -> " + card_deck[rand_index].image_source);
 	    }
 	    else if (p4.card_on_hand.Count < 13){
 		p4.card_on_hand.Add(card_deck[rand_index]);
-		Debug.Log(p4.player_name + " -> " + card_deck[rand_index].image_source);
 	    }
 
 	    card_deck.RemoveAt(rand_index);
 	}
 	while(card_deck.Count > 0);
+    }
+
+    void SortCardByValue(Player player){ // just... bubble sort...
+	for(int i = 0; i < player.card_on_hand.Count; i++){
+	    Card temp_card = player.card_on_hand[i];
+	    int index = i;
+	    int max_value = temp_card.card_value;
+
+	    for(int j = i + 1; j < player.card_on_hand.Count; j++){
+		if(player.card_on_hand[j].card_value > max_value){
+		    index = j;
+		    max_value = player.card_on_hand[j].card_value;
+		} // if max value
+	    } // j
+
+	    player.card_on_hand[i] = player.card_on_hand[index];
+	    player.card_on_hand[index] = temp_card;
+
+	} // i
     }
 
     void InstantiateCard(Player player, GameObject deck, float offset_x = 0.7f){ // instancing card_game_object to each player
@@ -116,7 +138,8 @@ public class Main : MonoBehaviour
 			    deck.transform.position.z);
 
 	    card_inst.transform.name = player.player_name + " " +
-		player.card_on_hand[i].card_name;
+		player.card_on_hand[i].card_name + " " +
+		player.card_on_hand[i].card_value;
 
 	    if(player.player_name == "Player1"){
 		card_inst.transform.tag = "player_card";
@@ -125,6 +148,9 @@ public class Main : MonoBehaviour
 	    else{
 		card_inst.transform.tag = "com_card";
 	    }
+
+	    card_inst.GetComponent<Card_Game_Object>().card_owner = player;
+	    card_inst.GetComponent<Card_Game_Object>().index_on_hand = i;
 
 	    card_inst.GetComponent<Card_Game_Object>().
 		GetComponent<SpriteRenderer>().sortingOrder = i; 
@@ -136,6 +162,114 @@ public class Main : MonoBehaviour
 	}
     }
         
+    // this function we call at Card_Game_Object script/class
+    public void AddCardToSelectionList(GameObject card_game_object){
+	card_game_object.GetComponent<Card_Game_Object>().index_on_selected_list =
+	    player_selected_card_list.Count;
+	
+	player_selected_card_list.Add(card_game_object);
+    }
+    public void RemoveCardFromSelectionList(int index){
+	player_selected_card_list.RemoveAt(index);
+
+	//reset index after removing card from list
+	for(int i = 0; i < player_selected_card_list.Count; i++){
+
+	    player_selected_card_list[i].
+		GetComponent<Card_Game_Object>().
+		index_on_selected_list = i;
+	}
+    }
+    // this function we call at Card_Game_Object script/class
+    
+    // void CheckCardSet(){ // check card set/suits single, pair, triple/three of kind etc
+    // 	int selected_count = player_selected_card_list.Count;
+    // 	if(selected_count > 0){
+    // 	}
+    // }
+    
+    bool IsOnSet(int max_count,
+		 int curr_count = 0,
+		 int last_value = 0){ // check card set/suits single, pair, triple/three of kind etc
+
+	bool return_value = false;
+	
+	int curr_value =
+	    player_selected_card_list[curr_count].
+	    GetComponent<Card_Game_Object>().card_data.card_value;
+
+	if(curr_count < max_count - 1){
+	    if(curr_count == 0){
+
+		Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
+
+		IsOnSet(max_count, curr_count + 1, curr_value);
+
+	    }
+	    else{
+
+		Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
+
+		if(last_value == curr_value){
+		    IsOnSet(max_count, curr_count + 1, curr_value);
+		}
+
+	    }
+	}  
+	else{
+
+	    return_value = true;
+	    Debug.Log(curr_count + ", " + max_count + " -> " + last_value + ", " + curr_value);
+	     if(last_value == curr_value){
+	     	Debug.Log("on set...");
+	     	// return true;
+		return_value = true;
+	     }
+	     else{
+	     	Debug.Log("not on set...");
+	     	// return false;
+		return_value = false;
+	     }
+	     // return_value = (last_value == curr_value);
+	}
+	return return_value;
+    }
+
+
+    // event handler on mouse click
+    public void SubmitCard(){
+
+	int selected_count = player_selected_card_list.Count;
+	if(selected_count > 0){
+
+	    if(selected_count == 1){
+		Debug.Log("single");
+	    }
+	    else if(selected_count == 2){
+		if(IsOnSet(2)){
+		    Debug.Log("pair");
+		}
+		else{
+		    Debug.Log("just nothing...");
+		}
+	    }
+	    else if(selected_count == 3){
+		if(IsOnSet(3)){
+		    Debug.Log("pair");
+		}
+		else{
+		    Debug.Log("just nothing...");
+		}
+	    }
+
+
+	} // selected count > 0
+	// player_selected_card_list[0].GetComponent<Card_Game_Object>().DestroyCard();
+	// player_selected_card_list.RemoveAt(0);
+    }
+    // event handler on mouse click
+    
+    
     void Start(){
 
 	card_game_object = GameObject.Find("CardGameObject");
@@ -152,6 +286,12 @@ public class Main : MonoBehaviour
 	p4 = new Player("COM3");
 
 	RandCard();
+
+	SortCardByValue(p1);
+	SortCardByValue(p2);
+	SortCardByValue(p3);
+	SortCardByValue(p4);
+
 	InstantiateCard(p1, p1_deck);
 	InstantiateCard(p2, p2_deck, 0.4f);
 	InstantiateCard(p3, p3_deck);

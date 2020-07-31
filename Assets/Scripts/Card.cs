@@ -13,6 +13,8 @@ using UnityEngine;
 /*
   NOTE [Kevin]:
 
+  this class will handle card attribute
+
   shape value from high to low:
   spade = 4
   heart = 3
@@ -49,6 +51,7 @@ public class Card
     public string card_index_str {get;}
     public string image_source {get;}
     public string card_name{get;}
+    public int single_card_value {get;}
 
     public Card(int _card_shape, int _card_value, int _card_index){
 	card_shape = _card_shape;
@@ -73,6 +76,8 @@ public class Card
 		card_shape_str = "diamond";
     		break;
     	}
+
+	single_card_value = card_value + shape_value;
 
 	switch(card_index){
 	    case 0:
