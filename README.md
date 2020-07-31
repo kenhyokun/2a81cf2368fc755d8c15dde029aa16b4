@@ -1,2 +1,2 @@
-scripts directory: Assets/Scripts/
-images directory: Assets/images/
+-scripts directory: Assets/Scripts/
+-images directory: Assets/images/
