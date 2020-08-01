@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleJSON;
 
 /*
   TODO [Kevin]:
@@ -79,12 +80,33 @@ public class Main : MonoBehaviour
     }
 
     void InitDeck(){
-	for(int j = 0; j < 4; j++){
-	    for(int i = 0; i < 13; i++){
-		Card card = new Card(j, i + 1, i);
-		card_deck.Add(card);
-	    } // i
-	} // j
+
+	TextAsset card_json = Resources.Load("JSON/cards") as TextAsset;
+	var card_parse = JSON.Parse(card_json.text);
+	
+	for(int i = 0; i < 52; i++){
+
+	    Card card =
+		new Card(
+			 card_parse["cards"][i]["card_shape"],
+			 card_parse["cards"][i]["shape_value"],
+			 card_parse["cards"][i]["shape_name"],
+			 card_parse["cards"][i]["card_value"],
+			 card_parse["cards"][i]["card_name"],
+			 card_parse["cards"][i]["card_index"]
+			 );
+
+	    card_deck.Add(card);
+	}
+
+
+	//// hard code way to create card attribute...
+	// for(int j = 0; j < 4; j++){
+	//     for(int i = 0; i < 13; i++){
+	// 	Card card = new Card(j, i + 1, i);
+	// 	card_deck.Add(card);
+	//     } // i
+	// } // j
     }
 
     void RandCard(){ // give 13 random card to each player
@@ -388,7 +410,6 @@ public class Main : MonoBehaviour
     }
 
     void Update(){
-	Debug.Log("avatar index:" + MessageSender.player_avatar_index + photo_str);
 	switch(turn_state){
 	    case TurnState.P1:
 		break;

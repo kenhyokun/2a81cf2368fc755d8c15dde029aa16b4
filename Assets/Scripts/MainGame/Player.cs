@@ -65,6 +65,9 @@ public class Player
 
 		triple_set_list.Add(triple);
 		break;
+
+	    case 4:
+		break;
 	}
     }
 

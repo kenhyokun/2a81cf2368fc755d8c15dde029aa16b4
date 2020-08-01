@@ -57,10 +57,10 @@ public class ProfilePanel : MonoBehaviour
 
 	player_name_text.text = player.player_name;
 	card_count_text.text = player.card_on_hand.Count.ToString();
-	avatar_photo.texture = player.win_photo_texture;
+	avatar_photo.texture = player.game_photo_texture;
     }
 
     void Update(){ // update profile panel avatar photo & player card count
-        
+	card_count_text.text = player.card_on_hand.Count.ToString();
     }
 }
