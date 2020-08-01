@@ -74,9 +74,14 @@ public class Main : MonoBehaviour
 	new List<GameObject>(); // list that contain player selected card (game object). select or deselect card will affect this list
 
     string photo_str;
+    GameObject point; // submited card position
 
     public static Main GetMain(){ // static function to get main component from main game object, so we dont need create main instance on other script/class when we need it
 	return GameObject.Find("Main").GetComponent<Main>();
+    }
+
+    public static Debugger GetDebugger(){
+	return GameObject.Find("Debugger").GetComponent<Debugger>();
     }
 
     void InitDeck(){
@@ -165,7 +170,7 @@ public class Main : MonoBehaviour
 		player.card_on_hand[i].card_name + " " +
 		player.card_on_hand[i].card_value;
 
-	    if(player.player_name == "Player1"){
+	    if(player.player_name == "Player"){
 		card_inst.transform.tag = "player_card";
 		card_inst.GetComponent<Card_Game_Object>().is_open = true;
 	    }
@@ -348,8 +353,45 @@ public class Main : MonoBehaviour
 		}
 	    }
 
+	    if(selected_count == 1){
+		player_selected_card_list[0].
+		    GetComponent<Card_Game_Object>().is_submited = true;
+
+		player_selected_card_list[0].transform.position =
+		    point.transform.position;
+	    }
+	    else{
+		for(int i = 0; i < selected_count; i++){
+
+		    player_selected_card_list[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+
+		    player_selected_card_list[i].
+			GetComponent<Card_Game_Object>().is_submited = true;
+		    
+		    if(i > 0){
+
+			player_selected_card_list[i].transform.position =
+			    new Vector3(player_selected_card_list[i - 1].transform.position.x + 1.0f,
+					player_selected_card_list[i - 1].transform.position.y,
+					player_selected_card_list[i - 1].transform.position.z
+					);
+
+		    }
+		    else{
+			player_selected_card_list[i].transform.position =
+			   // point.transform.position;
+			    new Vector3(point.transform.position.x - ( (1.18f * selected_count) / 2 ),
+					point.transform.position.y,
+					point.transform.position.z);
+		    }
+
+		}
+		
+	    }
+
 
 	} // selected count > 0
+
 	// player_selected_card_list[0].GetComponent<Card_Game_Object>().DestroyCard();
 	// player_selected_card_list.RemoveAt(0);
     }
@@ -371,7 +413,7 @@ public class Main : MonoBehaviour
 		break;
 	}
 
-	p1 = new Player("Player1", photo_str);
+	p1 = new Player("Player", photo_str);
 	p2 = new Player("COM1", "joe");
 	p3 = new Player("COM2", "seto");
 	p4 = new Player("COM3", "ryo");
@@ -385,6 +427,7 @@ public class Main : MonoBehaviour
 	p2_deck = GameObject.Find("Player2Deck");
 	p3_deck = GameObject.Find("Player3Deck");
 	p4_deck = GameObject.Find("Player4Deck");
+	point = GameObject.Find("Point");
 
 	InitDeck();
 

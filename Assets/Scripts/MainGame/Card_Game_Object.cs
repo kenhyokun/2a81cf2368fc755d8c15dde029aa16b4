@@ -26,6 +26,7 @@ public class Card_Game_Object : MonoBehaviour
     public int index_on_selected_list;
     Vector3 start_position;
     public Player card_owner {set; get;}
+    public bool is_submited {set; get;}
 
     void Start(){
         sprite_renderer = GetComponent<SpriteRenderer>();
@@ -33,6 +34,13 @@ public class Card_Game_Object : MonoBehaviour
     }
 
     void Update(){
+
+	// debugging thingy...
+	if(transform.tag == "com_card"){
+	    if(!is_submited){
+		is_open = Main.GetDebugger().is_all_card_open;
+	    }
+	}
 
 	// card open state
 	if(is_open){
@@ -44,6 +52,10 @@ public class Card_Game_Object : MonoBehaviour
 	    sprite_renderer.sprite = Resources.Load<Sprite>("images/cards/card_back");
 	}
 
+	// reset card orientation 
+	if(is_submited){
+	    transform.rotation = Quaternion.Euler(0,0,transform.parent.transform.rotation.z);
+	}
     }
 
     public void DestroyCard(){
@@ -53,23 +65,37 @@ public class Card_Game_Object : MonoBehaviour
     }
 
     void OnMouseDown(){
-	if(transform.tag == "player_card"){ // only player card
-	    if(!is_selected){
 
-		transform.position =
-		    new Vector3(transform.position.x,
-				transform.position.y + 0.3f,
-				transform.position.z);
-
-		Main.GetMain().AddCardToSelectionList(gameObject);
-
-		is_selected = true;
-	    }
-	    else{
-		Main.GetMain().RemoveCardFromSelectionList(index_on_selected_list);
-		transform.position = start_position;
-		is_selected = false;
-	    }
+	// debugging thingy...
+	bool condition = false;
+	if(Main.GetDebugger().is_select_all_card){
+	    condition = (transform.tag == "player_card" ||
+			 transform.tag == "com_card");
 	}
+	else{
+	    condition = (transform.tag == "player_card");
+	}
+
+	if(condition){
+	    if(!is_submited){
+		if(!is_selected){
+
+		    transform.position =
+			new Vector3(transform.position.x,
+				    transform.position.y + 0.3f,
+				    transform.position.z);
+
+		    Main.GetMain().AddCardToSelectionList(gameObject);
+
+		    is_selected = true;
+		}
+		else{
+		    Main.GetMain().RemoveCardFromSelectionList(index_on_selected_list);
+		    transform.position = start_position;
+		    is_selected = false;
+		}
+	    } // is_submited
+
+	} // tag = player_card
     }
 }

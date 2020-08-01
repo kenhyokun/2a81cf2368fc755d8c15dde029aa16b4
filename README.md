@@ -18,7 +18,9 @@
     
   - what works?
     - Avatar selection scene. Player can choose avatar and it will affect profile photo.
-  
+
+![Alt text](Assets/Resources/images/avatars/avatar_selection_yugi.png?raw=true "Let's duel... Let's duel...")
+
 ``` 
 Kevin Haryo Kuncoro
 kevinhyokun91@gmail.com
