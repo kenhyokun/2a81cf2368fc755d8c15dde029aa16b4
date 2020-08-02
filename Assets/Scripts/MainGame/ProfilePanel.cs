@@ -24,8 +24,11 @@ public class ProfilePanel : MonoBehaviour
     Text player_name_text;
     Text card_count_text;
     RawImage avatar_photo;
+    GameObject dia_green;
     
     void Start(){ // set profile panel avatar photo, player name, player card count
+
+	dia_green = GameObject.Find("dia_green"); // turn pointer
 
 	// set player
 	switch(index){
@@ -70,6 +73,12 @@ public class ProfilePanel : MonoBehaviour
 	    else{
 		avatar_photo.texture = player.lose_photo_texture;
 	    }
+	}
+
+	if(Main.GetMain().player_turn.player_tag == player.player_tag){
+	    dia_green.transform.position = new Vector3(transform.position.x + 1.85f,
+						       transform.position.y,
+						       transform.position.z);
 	}
     }
 }

@@ -20,6 +20,10 @@ public class Main_Ava : MonoBehaviour
     }
     // event handler
 
+    void Awake(){
+	DontDestroyOnLoad(GameObject.Find("BGM"));
+    }
+
     void Start()
     {
         

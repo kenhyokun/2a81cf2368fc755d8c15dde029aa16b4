@@ -19,5 +19,5 @@ using UnityEngine;
 public class Debugger : MonoBehaviour
 {
     public bool is_all_card_open; // open all card so we can view all player card
-    public bool is_select_all_card; // we can select all card from all player & deactive stupid AI... I mean basic AI...
+    public bool is_select_all_card; // we can select all card from all player & disable stupid AI... I mean basic AI...
 }

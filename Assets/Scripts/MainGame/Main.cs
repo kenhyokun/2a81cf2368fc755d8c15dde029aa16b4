@@ -530,8 +530,24 @@ public class Main : MonoBehaviour
 	player_selected_card_list.Clear();
 	NextTurn();
     }
+    public void SubmitButton(){
+	if(!Main.GetDebugger().is_select_all_card){
+	    if(turn_state == (int)TurnState.P1){
+		SubmitCard();
+	    }
+	}
+	else{
+	    SubmitCard();
+	}
+      
+    }
     public void PassButton(){
-	if(turn_state == (int)TurnState.P1){
+	if(!Main.GetDebugger().is_select_all_card){
+	    if(turn_state == (int)TurnState.P1){
+		Pass();
+	    }
+	}
+	else{
 	    Pass();
 	}
     }
@@ -631,6 +647,10 @@ public class Main : MonoBehaviour
 	}
     }
 
+    // ai turn time
+    float counter = 0.5f;
+    float max_counter = 0.5f;
+    
     void AI_ThrowSingleSet(){
 	// select card from deck
 	GameObject temp_card = 
@@ -690,39 +710,51 @@ public class Main : MonoBehaviour
 	switch(set_state){
 
 	    case (int)SetState.SINGLE:
-		
-		if(player_turn.single_set_list.Count > 0){
-		    if(player_turn.card_on_hand[player_turn.single_set_list[0]].card_value >
-		       card_value_on_table){
+		if(counter > 0){
+		    counter -= Time.deltaTime;
+		}	
+		else{
+		    if(player_turn.single_set_list.Count > 0){
+			if(player_turn.card_on_hand[player_turn.single_set_list[0]].card_value >
+			   card_value_on_table){
 
-			AI_ThrowSingleSet();
+			    AI_ThrowSingleSet();
 
+			}
+			else{
+			    Pass();
+			}
 		    }
 		    else{
 			Pass();
 		    }
-		}
-		else{
-		    Pass();
+
+		    counter = max_counter;
 		}
 
 		break;
 
 	    case (int)SetState.PAIR:
 
-		if(player_turn.pair_set_list.Count > 0){
-		    if(player_turn.card_on_hand[player_turn.pair_set_list[0][0]].card_value >
-		       card_value_on_table){
-
-			AI_ThrowPairSet();
-
+		if(counter > 0){
+		    counter -= Time.deltaTime;
+		}
+		else{
+		    if(player_turn.pair_set_list.Count > 0){
+			if(player_turn.card_on_hand[player_turn.pair_set_list[0][0]].card_value >
+			   card_value_on_table){
+			    
+			    AI_ThrowPairSet();
+			    
+			}
+			else{
+			    Pass();
+			}
 		    }
 		    else{
 			Pass();
 		    }
-		}
-		else{
-		    Pass();
+		    counter = max_counter;
 		}
 
 		break;
@@ -730,6 +762,10 @@ public class Main : MonoBehaviour
 
 	    case (int)SetState.TRIPLE:
 
+		if(counter > 0){
+		    counter -= Time.deltaTime;
+		}
+		else{
 		if(player_turn.triple_set_list.Count > 0){
 		    if(player_turn.card_on_hand[player_turn.triple_set_list[0][0]].card_value >
 		       card_value_on_table){
@@ -744,6 +780,8 @@ public class Main : MonoBehaviour
 		else{
 		    Pass();
 		}
+		counter = max_counter;
+		}
 
 		break;
 	} // switch case
@@ -756,6 +794,10 @@ public class Main : MonoBehaviour
     }
 
     void AI_RandThrow(){ // just random thingy...
+	if(counter > 0){
+	    counter -= Time.deltaTime;
+	}
+	else{
 	int rand = Random.Range(0, 3);
 	switch(rand){
 	    case 0:
@@ -785,6 +827,18 @@ public class Main : MonoBehaviour
 		}
 		break;
 	}
+	counter = max_counter;
+	}
+    }
+
+    void PlayerTurn(int state = 0){ // if state == 1 player turn with AI
+	player_turn.ClearCardSet();
+	CheckCardOnHand(player_turn);
+	CheckResetTable();
+
+	if(state == 1){
+	    if(!Main.GetDebugger().is_select_all_card) AI();
+	}
     }
 
     void Update(){
@@ -797,35 +851,21 @@ public class Main : MonoBehaviour
 		switch(turn_state){
 		    case (int)TurnState.P1:
 			player_turn = p1;
-			player_turn.ClearCardSet();
-			CheckCardOnHand(player_turn);
-			CheckResetTable();
-
+			PlayerTurn();
+			// PlayerTurn(1); // use this for all player run by stupid AI muahaha...
 			break;
 		    case (int)TurnState.P2:
 			player_turn = p2;
-			player_turn.ClearCardSet();
-			CheckCardOnHand(player_turn);
-			CheckResetTable();
-
-			if(!Main.GetDebugger().is_select_all_card) AI();
-			
+			PlayerTurn(1);	
 			break;
 		    case (int)TurnState.P3:
 			player_turn = p3;
-			player_turn.ClearCardSet();
-			CheckCardOnHand(player_turn);
-			CheckResetTable();
-
+			PlayerTurn(1);	
 			if(!Main.GetDebugger().is_select_all_card) AI();
 			break;
 		    case (int)TurnState.P4:
 			player_turn = p4;
-			player_turn.ClearCardSet();
-			CheckCardOnHand(player_turn);
-			CheckResetTable();
-
-			if(!Main.GetDebugger().is_select_all_card) AI();
+			PlayerTurn(1);	
 			break;
 		}
 

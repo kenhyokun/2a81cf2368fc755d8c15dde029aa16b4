@@ -42,7 +42,9 @@ Assets/Resources/JSON/cards.json
       while when losing the character looks sad / angry.
     - For now, we only play with single, pair, and triple set.
     - Game start from player -> com1 -> com2 -> com3 -> player.
-    - No main menu, only avatar selection and gameplay.
+    - Only one BGM looping. No SFX.
+    - Only two button in main game. Submit button and Pass button.
+    - No main menu, only avatar selection and gameplay. Force quit the app to exit or replay the game
     - No loading screen (of course... what to expect...)
 
 some screenshoot: </br>
