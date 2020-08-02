@@ -15,6 +15,25 @@
     - images directory: Assets/Resources/images/
     - plugins directory: Assets/Scripts/Plugins/
     - json directory: Assets/Resources/JSON/
+
+```
+Assets/Scenes/MainGame.unity
+Assets/Scenes/AvatarSelection.unity
+Assets/Scripts/AvatarSelection
+Assets/Scripts/AvatarSelection/AvatarBox.cs
+Assets/Scripts/AvatarSelection/Main_Ava.cs
+Assets/Scripts/MessageSender.cs
+Assets/Scripts/MainGame/Main.cs
+Assets/Scripts/MainGame/Debugger.cs
+Assets/Scripts/MainGame/Card.cs
+Assets/Scripts/MainGame/Player.cs
+Assets/Scripts/MainGame/SetPanel.cs
+Assets/Scripts/MainGame/Card_Game_Object.cs
+Assets/Scripts/MainGame/ProfilePanel.cs
+Assets/Scripts/Plugins/SimpleJSON.cs
+Assets/Scripts/Plugins/LICENSE
+Assets/Resources/JSON/cards.json
+```
     
   - what works?
     - Avatar selection scene. Player can choose avatar and it will affect profile photo.

@@ -530,6 +530,11 @@ public class Main : MonoBehaviour
 	player_selected_card_list.Clear();
 	NextTurn();
     }
+    public void PassButton(){
+	if(turn_state == (int)TurnState.P1){
+	    Pass();
+	}
+    }
     // event handler on mouse click
     
     void Awake(){
@@ -626,28 +631,72 @@ public class Main : MonoBehaviour
 	}
     }
 
+    void AI_ThrowSingleSet(){
+	// select card from deck
+	GameObject temp_card = 
+	    GetPlayerDeck(player_turn).transform.
+	    GetChild(player_turn.single_set_list[0]).
+	    gameObject;
+
+	// add card to selected list
+	temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+	temp_card.GetComponent<Card_Game_Object>().is_open = true;
+	AddCardToSelectionList(temp_card);
+
+	SubmitCard(); // submit card
+
+    }
+    void AI_ThrowPairSet(){
+	for(int i = 0; i < 2; i++){
+
+	    // select card from deck
+	    GameObject temp_card = 
+		GetPlayerDeck(player_turn).transform.
+		GetChild(player_turn.pair_set_list[0][i]).
+		gameObject;
+
+	    // add card to selected list
+	    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+	    temp_card.GetComponent<Card_Game_Object>().is_open = true;
+	    AddCardToSelectionList(temp_card);
+			    
+	}
+
+	SubmitCard(); // submit card
+    }
+    void AI_ThrowTripleSet(){
+	for(int i = 0; i < 3; i++){
+
+	    // select card from deck
+	    GameObject temp_card = 
+		GetPlayerDeck(player_turn).transform.
+		GetChild(player_turn.triple_set_list[0][i]).
+		gameObject;
+
+	    // add card to selected list
+	    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+	    temp_card.GetComponent<Card_Game_Object>().is_open = true;
+	    AddCardToSelectionList(temp_card);
+			    
+	}
+
+	SubmitCard(); // submit card
+    }
+
 
     void AI(){ // stupid AI... I mean basic AI...	
+	if(!is_first_run){
+	// }
 	switch(set_state){
 
 	    case (int)SetState.SINGLE:
-
+		
 		if(player_turn.single_set_list.Count > 0){
 		    if(player_turn.card_on_hand[player_turn.single_set_list[0]].card_value >
 		       card_value_on_table){
 
-			// select card from deck
-			GameObject temp_card = 
-			GetPlayerDeck(player_turn).transform.
-			    GetChild(player_turn.single_set_list[0]).
-			    gameObject;
+			AI_ThrowSingleSet();
 
-			// add card to selected list
-			temp_card.GetComponent<Card_Game_Object>().is_selected = true;
-			temp_card.GetComponent<Card_Game_Object>().is_open = true;
-			AddCardToSelectionList(temp_card);
-
-			SubmitCard(); // submit card
 		    }
 		    else{
 			Pass();
@@ -665,22 +714,8 @@ public class Main : MonoBehaviour
 		    if(player_turn.card_on_hand[player_turn.pair_set_list[0][0]].card_value >
 		       card_value_on_table){
 
-			for(int i = 0; i < 2; i++){
+			AI_ThrowPairSet();
 
-			    // select card from deck
-			    GameObject temp_card = 
-				GetPlayerDeck(player_turn).transform.
-				GetChild(player_turn.pair_set_list[0][i]).
-				gameObject;
-
-			    // add card to selected list
-			    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
-			    temp_card.GetComponent<Card_Game_Object>().is_open = true;
-			    AddCardToSelectionList(temp_card);
-			    
-			}
-
-			SubmitCard(); // submit card
 		    }
 		    else{
 			Pass();
@@ -699,22 +734,8 @@ public class Main : MonoBehaviour
 		    if(player_turn.card_on_hand[player_turn.triple_set_list[0][0]].card_value >
 		       card_value_on_table){
 
-			for(int i = 0; i < 3; i++){
-
-			    // select card from deck
-			    GameObject temp_card = 
-				GetPlayerDeck(player_turn).transform.
-				GetChild(player_turn.triple_set_list[0][i]).
-				gameObject;
-
-			    // add card to selected list
-			    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
-			    temp_card.GetComponent<Card_Game_Object>().is_open = true;
-			    AddCardToSelectionList(temp_card);
-			    
-			}
-
-			SubmitCard(); // submit card
+			AI_ThrowTripleSet();
+			
 		    }
 		    else{
 			Pass();
@@ -724,6 +745,44 @@ public class Main : MonoBehaviour
 		    Pass();
 		}
 
+		break;
+	} // switch case
+
+	} // !is first run
+	else{
+	    // AI_ThrowSingleSet();
+	    AI_RandThrow();
+	}
+    }
+
+    void AI_RandThrow(){ // just random thingy...
+	int rand = Random.Range(0, 3);
+	switch(rand){
+	    case 0:
+		if(player_turn.single_set_list.Count > 0){
+		    AI_ThrowSingleSet();
+		}
+		else{
+		    AI_RandThrow();
+		}
+		break;
+
+	    case 1:
+		if(player_turn.pair_set_list.Count > 0){
+		    AI_ThrowPairSet();
+		}
+		else{
+		    AI_RandThrow();
+		}
+		break;
+
+	    case 2:
+		if(player_turn.triple_set_list.Count > 0){
+		    AI_ThrowTripleSet();
+		}
+		else{
+		    AI_RandThrow();
+		}
 		break;
 	}
     }
