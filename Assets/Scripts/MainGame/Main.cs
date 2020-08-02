@@ -658,6 +658,73 @@ public class Main : MonoBehaviour
 		}
 
 		break;
+
+	    case (int)SetState.PAIR:
+
+		if(player_turn.pair_set_list.Count > 0){
+		    if(player_turn.card_on_hand[player_turn.pair_set_list[0][0]].card_value >
+		       card_value_on_table){
+
+			for(int i = 0; i < 2; i++){
+
+			    // select card from deck
+			    GameObject temp_card = 
+				GetPlayerDeck(player_turn).transform.
+				GetChild(player_turn.pair_set_list[0][i]).
+				gameObject;
+
+			    // add card to selected list
+			    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+			    temp_card.GetComponent<Card_Game_Object>().is_open = true;
+			    AddCardToSelectionList(temp_card);
+			    
+			}
+
+			SubmitCard(); // submit card
+		    }
+		    else{
+			Pass();
+		    }
+		}
+		else{
+		    Pass();
+		}
+
+		break;
+
+
+	    case (int)SetState.TRIPLE:
+
+		if(player_turn.triple_set_list.Count > 0){
+		    if(player_turn.card_on_hand[player_turn.triple_set_list[0][0]].card_value >
+		       card_value_on_table){
+
+			for(int i = 0; i < 3; i++){
+
+			    // select card from deck
+			    GameObject temp_card = 
+				GetPlayerDeck(player_turn).transform.
+				GetChild(player_turn.triple_set_list[0][i]).
+				gameObject;
+
+			    // add card to selected list
+			    temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+			    temp_card.GetComponent<Card_Game_Object>().is_open = true;
+			    AddCardToSelectionList(temp_card);
+			    
+			}
+
+			SubmitCard(); // submit card
+		    }
+		    else{
+			Pass();
+		    }
+		}
+		else{
+		    Pass();
+		}
+
+		break;
 	}
     }
 
