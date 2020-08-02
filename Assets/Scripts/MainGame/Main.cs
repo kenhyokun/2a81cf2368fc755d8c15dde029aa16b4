@@ -357,6 +357,53 @@ public class Main : MonoBehaviour
 	}
     }
 
+    void ThrowCardToTable(int selected_count, int curr_card_value){
+	for(int i = 0; i < point.transform.childCount; i++){
+	    Destroy(point.transform.GetChild(i).gameObject);
+	}
+
+	card_value_on_table = curr_card_value;
+
+	if(selected_count == 1){
+	    player_selected_card_list[0].
+		GetComponent<Card_Game_Object>().is_submited = true;
+
+	    player_selected_card_list[0].transform.position =
+		point.transform.position;
+	}
+	else{
+	    for(int i = 0; i < selected_count; i++){
+
+		player_selected_card_list[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+
+		player_selected_card_list[i].
+		    GetComponent<Card_Game_Object>().is_submited = true;
+		    
+		if(i > 0){
+
+		    player_selected_card_list[i].transform.position =
+			new Vector3(player_selected_card_list[i - 1].transform.position.x + 1.0f,
+				    player_selected_card_list[i - 1].transform.position.y,
+				    player_selected_card_list[i - 1].transform.position.z
+				    );
+
+		}
+		else{
+		    player_selected_card_list[i].transform.position =
+			// point.transform.position;
+			new Vector3(point.transform.position.x - ( (1.18f * selected_count) / 2 ),
+				    point.transform.position.y,
+				    point.transform.position.z);
+		}
+
+	    }
+	} // submited card position
+
+	RemoveCardOnHand(player_turn, selected_count);
+	player_selected_card_list.Clear();
+	NextTurn();
+    }
+
     // event handler on mouse click
     public void SubmitCard(){
 
@@ -367,42 +414,45 @@ public class Main : MonoBehaviour
 
 	    // - check card set here...
 	    // - set curr card value here...
-	    if(selected_count == 1){
-		Debug.Log("single");
+
+	    if(selected_count == 1){ // single
 
 		curr_card_value =
-		    player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.card_value +
-		    player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.shape_value;
+		    player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.card_value;
+		    // player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.shape_value;
 
 		set_state = (int)SetState.SINGLE;
-		set_panel.Show();
+
+		if(is_first_run) set_panel.Show();
+
 		is_on_set = true;
+
 	    }
-	    else if(selected_count == 2){
+	    else if(selected_count == 2){ // pair
 		IsOnSet(2);
 		if(is_on_set){
-		    Debug.Log("pair");
 
 		    curr_card_value =
 			player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.card_value;
 
 		    set_state = (int)SetState.PAIR;
-		    set_panel.Show(2);
+
+		    if(is_first_run) set_panel.Show(2);
 		}
 		else{
 		    Debug.Log("just nothing...");
 		}
 	    }
-	    else if(selected_count == 3){
+	    else if(selected_count == 3){ // triple
 		IsOnSet(3);
 		if(is_on_set){
-		    Debug.Log("triples");
 
 		    curr_card_value =
 			player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.card_value;
 
 		    set_state = (int)SetState.TRIPLE;
-		    set_panel.Show(3);
+
+		    if(is_first_run) set_panel.Show(3);
 		}
 		else{
 		    Debug.Log("just nothing...");
@@ -417,72 +467,36 @@ public class Main : MonoBehaviour
 	      NOTE [Kevin]:
 
 	      - check if card on set (single, pair, triple, etc)
-	      - check if this turn is first run (first card throw/submit)
-	      - if first run/throw/submit, set card value on table
+	      - check if first run. if true, set set state on table =  set state
 	      - run next turn until we find player with higher card set value
 	      
 	      - player can't submit card if card value < card value on table
 
 	    */
 
+	    if(is_first_run){
+		set_state_on_table = set_state;
+		is_first_run = false;
+	    }
 
 	    if(is_on_set &&
-	       curr_card_value > card_value_on_table // check if player card value > card value on table
+	       set_state == set_state_on_table &&
+	       curr_card_value >= card_value_on_table // check if player card value > card value on table
 	       ){ 
-	    
-		// check first run here...
-		if(is_first_run){
-		    card_value_on_table = curr_card_value;
-		    is_first_run = false;
-		} // is first run
-		
-		if(selected_count == 1){
-		    player_selected_card_list[0].
-			GetComponent<Card_Game_Object>().is_submited = true;
 
-		    player_selected_card_list[0].transform.position =
-			point.transform.position;
+		if(set_state_on_table == (int)SetState.SINGLE &&
+		   curr_card_value == card_value_on_table){ // compare shape value if card value on table == player card value
+
+		    if(player_selected_card_list[0].GetComponent<Card_Game_Object>().card_data.shape_value >
+		       point.transform.GetChild(0).GetComponent<Card_Game_Object>().card_data.shape_value){
+			ThrowCardToTable(selected_count, curr_card_value);
+		    }
+
 		}
 		else{
-		    for(int i = 0; i < selected_count; i++){
-
-			player_selected_card_list[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-
-			player_selected_card_list[i].
-			    GetComponent<Card_Game_Object>().is_submited = true;
-		    
-			if(i > 0){
-
-			    player_selected_card_list[i].transform.position =
-				new Vector3(player_selected_card_list[i - 1].transform.position.x + 1.0f,
-					    player_selected_card_list[i - 1].transform.position.y,
-					    player_selected_card_list[i - 1].transform.position.z
-					    );
-
-			}
-			else{
-			    player_selected_card_list[i].transform.position =
-				// point.transform.position;
-				new Vector3(point.transform.position.x - ( (1.18f * selected_count) / 2 ),
-					    point.transform.position.y,
-					    point.transform.position.z);
-			}
-
-		    }
-		} // submited card position
-
-		RemoveCardOnHand(player_turn, selected_count);
-	    
-		// // remove testing
-		// for(int i = 0; i < point.transform.childCount; i++){
-		// 	Destroy(point.transform.GetChild(i).gameObject);
-		// }
-		// player_selected_card_list.Clear();
-		// // remove testing
-
-		player_selected_card_list.Clear();
-		NextTurn();
-
+		    ThrowCardToTable(selected_count, curr_card_value);
+		}
+			    
 	    } // is on set
 
 	} // selected count > 0

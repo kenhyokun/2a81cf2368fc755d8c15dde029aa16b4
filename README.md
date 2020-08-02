@@ -26,6 +26,7 @@
 some screen shoot: </br>
 ![Alt text](Screenshoot/avatarselection.png?raw=true "avatar selection screen")
 ![Alt text](Screenshoot/gameplay.png?raw=true "game play screen")
+![Alt text](Screenshoot/gameplay2.png?raw=true "game play screen 2")
 
 ``` 
 Kevin Haryo Kuncoro
