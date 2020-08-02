@@ -49,11 +49,10 @@ public class Main : MonoBehaviour
 	P4
     }
 
-    // enum ActState{ // action state -> what we do on one turn...
-    // 	ACT_THROW,
-    // 	ACT_PASS,
-    // 	ACT_END
-    // }
+    enum GameState{
+	GAME_PLAY, // turn loop
+     	GAME_END // end of game, when one of player card == 0
+     }
 
     enum SetState{ // card set state
 	NUN,
@@ -63,7 +62,7 @@ public class Main : MonoBehaviour
     }
 
     int turn_state;
-    // ActState act_state;
+    int game_state;
     List<Card> card_deck = new List<Card>();
 
     public Player p1 {set; get;}
@@ -90,6 +89,8 @@ public class Main : MonoBehaviour
     bool is_first_run = true;
     int set_state;
     int set_state_on_table;
+
+    public bool is_end_game;
 
     public static Main GetMain(){ // static function to get main component from main game object, so we dont need create main instance on other script/class when we need it
 	return GameObject.Find("Main").GetComponent<Main>();
@@ -593,6 +594,17 @@ public class Main : MonoBehaviour
 	return false;
     }
 
+    bool IsEndGame(){
+	if(p1.card_on_hand.Count == 0 ||
+	   p2.card_on_hand.Count == 0 ||
+	   p3.card_on_hand.Count == 0 ||
+	   p4.card_on_hand.Count == 0
+	   ){
+	    return true;
+	}
+	return false;
+    }
+
     void ResetTable(){
 	card_value_on_table = 0;
 	set_state_on_table = (int)SetState.NUN;
@@ -611,25 +623,39 @@ public class Main : MonoBehaviour
 
     void Update(){
 
-	Debug.Log("turn state:" + turn_state);
+	switch(game_state){
+	    case (int)GameState.GAME_PLAY:
 
-	switch(turn_state){
-	    case (int)TurnState.P1:
-		player_turn = p1;
-		CheckResetTable();
+		Debug.Log("turn state:" + turn_state);
+
+		switch(turn_state){
+		    case (int)TurnState.P1:
+			player_turn = p1;
+			CheckResetTable();
+			break;
+		    case (int)TurnState.P2:
+			player_turn = p2;
+			CheckResetTable();
+			break;
+		    case (int)TurnState.P3:
+			player_turn = p3;
+			CheckResetTable();
+			break;
+		    case (int)TurnState.P4:
+			player_turn = p4;
+			CheckResetTable();
+			break;
+		}
+
+		if(IsEndGame()) game_state++;
+		
 		break;
-	    case (int)TurnState.P2:
-		player_turn = p2;
-		CheckResetTable();
-		break;
-	    case (int)TurnState.P3:
-		player_turn = p3;
-		CheckResetTable();
-		break;
-	    case (int)TurnState.P4:
-		player_turn = p4;
-		CheckResetTable();
+	    case (int)GameState.GAME_END:
+		Debug.Log("End Game....");
+		last_player_thrower.is_win = true;	
+		is_end_game = true;
 		break;
 	}
+	
     }
 }

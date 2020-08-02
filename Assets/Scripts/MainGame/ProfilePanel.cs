@@ -62,5 +62,14 @@ public class ProfilePanel : MonoBehaviour
 
     void Update(){ // update profile panel avatar photo & player card count
 	card_count_text.text = player.card_on_hand.Count.ToString();
+
+	if(Main.GetMain().is_end_game){
+	    if(player.is_win){
+		avatar_photo.texture = player.win_photo_texture;
+	    }
+	    else{
+		avatar_photo.texture = player.lose_photo_texture;
+	    }
+	}
     }
 }
