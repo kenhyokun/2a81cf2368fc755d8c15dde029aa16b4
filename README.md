@@ -18,8 +18,11 @@
     
   - what works?
     - Avatar selection scene. Player can choose avatar and it will affect profile photo.
+    - Profile photo can change depending on the game condition during gameplay. 
+      For example, when winning the character is smiling, 
+      while when losing the character looks sad / angry.
     - For now, we only play with single, pair, and triple set.
-    - Game start from pn to pn
+    - Game start from player -> com1 -> com2 -> com3 -> player.
     - No main menu, only avatar selection and gameplay.
     - No loading screen (of course... what to expect...)
 

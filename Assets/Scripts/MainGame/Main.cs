@@ -327,22 +327,27 @@ public class Main : MonoBehaviour
 	}
     }
 
-    void RemoveCardOnHand(Player player, int selected_count){ // removing player card on hand
-
-	GameObject deck = null;
-
+    GameObject GetPlayerDeck(Player player){
 	if(player.player_tag == "p1"){
-	    deck = p1_deck;
+	    return p1_deck;
 	}
 	else if(player.player_tag == "p2"){
-	    deck = p2_deck;
+	    return p2_deck;
 	}
 	else if(player.player_tag == "p3"){
-	    deck = p3_deck;
+	    return p3_deck;
 	}
 	else if(player.player_tag == "p4"){
-	    deck = p4_deck;
+	    return p4_deck;
 	}
+	return null;
+    }
+
+    void RemoveCardOnHand(Player player, int selected_count){ // removing player card on hand
+
+	GameObject deck = GetPlayerDeck(player);
+
+	
 
 	// removing player card on hand
 	for(int i = 0; i < selected_count; i++){
@@ -621,6 +626,41 @@ public class Main : MonoBehaviour
 	}
     }
 
+
+    void AI(){ // stupid AI... I mean basic AI...	
+	switch(set_state){
+
+	    case (int)SetState.SINGLE:
+
+		if(player_turn.single_set_list.Count > 0){
+		    if(player_turn.card_on_hand[player_turn.single_set_list[0]].card_value >
+		       card_value_on_table){
+
+			// select card from deck
+			GameObject temp_card = 
+			GetPlayerDeck(player_turn).transform.
+			    GetChild(player_turn.single_set_list[0]).
+			    gameObject;
+
+			// add card to selected list
+			temp_card.GetComponent<Card_Game_Object>().is_selected = true;
+			temp_card.GetComponent<Card_Game_Object>().is_open = true;
+			AddCardToSelectionList(temp_card);
+
+			SubmitCard(); // submit card
+		    }
+		    else{
+			Pass();
+		    }
+		}
+		else{
+		    Pass();
+		}
+
+		break;
+	}
+    }
+
     void Update(){
 
 	switch(game_state){
@@ -631,19 +671,35 @@ public class Main : MonoBehaviour
 		switch(turn_state){
 		    case (int)TurnState.P1:
 			player_turn = p1;
+			player_turn.ClearCardSet();
+			CheckCardOnHand(player_turn);
 			CheckResetTable();
+
 			break;
 		    case (int)TurnState.P2:
 			player_turn = p2;
+			player_turn.ClearCardSet();
+			CheckCardOnHand(player_turn);
 			CheckResetTable();
+
+			if(!Main.GetDebugger().is_select_all_card) AI();
+			
 			break;
 		    case (int)TurnState.P3:
 			player_turn = p3;
+			player_turn.ClearCardSet();
+			CheckCardOnHand(player_turn);
 			CheckResetTable();
+
+			if(!Main.GetDebugger().is_select_all_card) AI();
 			break;
 		    case (int)TurnState.P4:
 			player_turn = p4;
+			player_turn.ClearCardSet();
+			CheckCardOnHand(player_turn);
 			CheckResetTable();
+
+			if(!Main.GetDebugger().is_select_all_card) AI();
 			break;
 		}
 

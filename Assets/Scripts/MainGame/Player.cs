@@ -81,4 +81,11 @@ public class Player
 	    five_set_list.Count;
     }
 
+    public void ClearCardSet(){
+	single_set_list.Clear();
+	pair_set_list.Clear();
+	triple_set_list.Clear();
+	five_set_list.Clear();
+    }
+
 }
