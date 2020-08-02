@@ -55,7 +55,7 @@ public class Main : MonoBehaviour
 	ACT_END
     }
 
-    TurnState turn_state;
+    int turn_state;
     ActState act_state;
     List<Card> card_deck = new List<Card>();
 
@@ -63,7 +63,7 @@ public class Main : MonoBehaviour
     public Player p2 {set; get;}
     public Player p3 {set; get;}
     public Player p4 {set; get;}
-    Player player_turn;
+    public Player player_turn {set; get;}
 
     public GameObject card_game_object;
     public GameObject p1_deck;
@@ -354,7 +354,8 @@ public class Main : MonoBehaviour
 	for(int i = 0; i < selected_count; i++){
 	    player_selected_card_list[i].transform.parent = point.transform; // set parent to point. when we dont need this card object, we just destroy all point child 
 	    Card_Game_Object temp_card = player_selected_card_list[i].GetComponent<Card_Game_Object>();
-	    temp_card.card_owner.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
+	    // temp_card.card_owner.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
+	    player.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
 
 	    // reset card game object index on hand
 	    for(int j = 0; j < deck.transform.childCount; j++){
@@ -431,16 +432,30 @@ public class Main : MonoBehaviour
 		}
 	    } // submited card position
 
-	    RemoveCardOnHand(p1, selected_count);
+	    if(Main.GetDebugger().is_select_all_card){
+		RemoveCardOnHand(player_turn, selected_count);
+	    }
+	    else{
+		RemoveCardOnHand(p1, selected_count);
+	    }
 	    
-	    // // remove testing
-	    // for(int i = 0; i < point.transform.childCount; i++){
-	    // 	Destroy(point.transform.GetChild(i).gameObject);
-	    // }
-	    // player_selected_card_list.Clear();
-	    // // remove testing
+	    // remove testing
+	    for(int i = 0; i < point.transform.childCount; i++){
+	    	Destroy(point.transform.GetChild(i).gameObject);
+	    }
+	    player_selected_card_list.Clear();
+	    // remove testing
+
 
 	} // selected count > 0
+
+	if(turn_state < 3){
+	    turn_state++;
+	}
+	else{
+	    turn_state = 0;
+	}
+
 
     }
     // event handler on mouse click
@@ -499,18 +514,27 @@ public class Main : MonoBehaviour
 	p2_deck.transform.Rotate(0.0f, 0.0f, 90.0f);
 	p4_deck.transform.Rotate(0.0f, 0.0f, -90.0f);
 
-	turn_state = TurnState.P1;
+	// init first player turn
+	turn_state = (int)TurnState.P1;
+	player_turn = p1;
     }
 
     void Update(){
+
+	Debug.Log("turn state:" + turn_state);
+
 	switch(turn_state){
-	    case TurnState.P1:
+	    case (int)TurnState.P1:
+		player_turn = p1;
 		break;
-	    case TurnState.P2:
+	    case (int)TurnState.P2:
+		player_turn = p2;
 		break;
-	    case TurnState.P3:
+	    case (int)TurnState.P3:
+		player_turn = p3;
 		break;
-	    case TurnState.P4:
+	    case (int)TurnState.P4:
+		player_turn = p4;
 		break;
 	}
     }

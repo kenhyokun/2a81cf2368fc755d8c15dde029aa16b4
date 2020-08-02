@@ -66,6 +66,7 @@ public class Card_Game_Object : MonoBehaviour
     }
 
     void OnMouseDown(){
+	if(Main.GetMain().player_turn.player_tag == card_owner.player_tag){
 
 	// debugging thingy...
 	bool condition = false;
@@ -108,5 +109,7 @@ public class Card_Game_Object : MonoBehaviour
 	    } // is_submited
 
 	} // condition 
+
+	} // player tag
     }
 }
