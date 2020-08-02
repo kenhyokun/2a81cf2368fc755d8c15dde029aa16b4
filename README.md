@@ -19,7 +19,6 @@
   - what works?
     - Avatar selection scene. Player can choose avatar and it will affect profile photo.
 
-</br>
 some screen shoot: </br>
 ![Alt text](Screenshoot/avatarselection.png?raw=true "avatar selection screen")
 ![Alt text](Screenshoot/gameplay.png?raw=true "game play screen")
