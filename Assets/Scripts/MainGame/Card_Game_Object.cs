@@ -59,57 +59,58 @@ public class Card_Game_Object : MonoBehaviour
 	}
     }
 
-    public void DestroyCard(){
-	//need to reset index...
-	card_owner.card_on_hand.RemoveAt(index_on_hand);
-	Destroy(gameObject);
-    }
+    // public void DestroyCard(){
+    // 	//need to reset index...
+    // 	card_owner.card_on_hand.RemoveAt(index_on_hand);
+    // 	Destroy(gameObject);
+    // }
 
     void OnMouseDown(){
 	if(Main.GetMain().player_turn.player_tag == card_owner.player_tag){
 
-	// debugging thingy...
-	bool condition = false;
-	if(Main.GetDebugger().is_select_all_card){
-	    condition = (transform.tag == "player_card" ||
-			 transform.tag == "com_card");
-	}
-	else{
-	    condition = (transform.tag == "player_card");
-	}
+	    // debugging thingy...
+	    bool condition = false;
+	    if(Main.GetDebugger().is_select_all_card){
+		condition = (transform.tag == "player_card" ||
+			     transform.tag == "com_card");
+	    }
+	    else{
+		condition = (transform.tag == "player_card");
+	    }
 
-	if(condition){
-	    if(!is_submited){
-		if(!is_selected){
+	    if(condition){
+		if(!is_submited){
+		    if(!is_selected){
 
-		    switch(arrange_orientation){
-			case 0: // horizontal
-			    transform.position =
-				new Vector3(transform.position.x,
-					    transform.position.y + 0.3f,
-					    transform.position.z);
-			    break;
-			case 1: // vertical
-			    transform.position =
-				new Vector3(transform.position.x - 0.3f,
-					    transform.position.y,
-					    transform.position.z);
-			    break;
-		    } // switch case
+			switch(arrange_orientation){
+			    case 0: // horizontal
+				transform.position =
+				    new Vector3(transform.position.x,
+						transform.position.y + 0.3f,
+						transform.position.z);
+				break;
+			    case 1: // vertical
+				transform.position =
+				    new Vector3(transform.position.x - 0.3f,
+						transform.position.y,
+						transform.position.z);
+				break;
+			} // switch case
 
-		    Main.GetMain().AddCardToSelectionList(gameObject);
+			Main.GetMain().AddCardToSelectionList(gameObject);
 
-		    is_selected = true;
-		}
-		else{
-		    Main.GetMain().RemoveCardFromSelectionList(index_on_selected_list);
-		    transform.position = start_position;
-		    is_selected = false;
-		}
-	    } // is_submited
+			is_selected = true;
+		    }
+		    else{
+			Main.GetMain().RemoveCardFromSelectionList(index_on_selected_list);
+			transform.position = start_position;
+			is_selected = false;
+		    }
+		} // is_submited
 
-	} // condition 
+	    } // condition
 
 	} // player tag
+	
     }
 }

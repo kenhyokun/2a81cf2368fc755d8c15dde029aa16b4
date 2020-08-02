@@ -2670,7 +2670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is_all_card_open: 0
-  is_select_all_card: 1
+  is_select_all_card: 0
 --- !u!1 &2116002320
 GameObject:
   m_ObjectHideFlags: 0

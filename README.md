@@ -18,6 +18,10 @@
     
   - what works?
     - Avatar selection scene. Player can choose avatar and it will affect profile photo.
+    - For now, we only play with single, pair, and triple set.
+    - Game start from pn to pn
+    - No main menu, only avatar selection and gameplay.
+    - No loading screen (of course... what to expect...)
 
 some screen shoot: </br>
 ![Alt text](Screenshoot/avatarselection.png?raw=true "avatar selection screen")
