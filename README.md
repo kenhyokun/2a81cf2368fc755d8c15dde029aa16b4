@@ -23,10 +23,12 @@
     - No main menu, only avatar selection and gameplay.
     - No loading screen (of course... what to expect...)
 
-some screen shoot: </br>
+some screenshoot: </br>
 ![Alt text](Screenshoot/avatarselection.png?raw=true "avatar selection screen")
 ![Alt text](Screenshoot/gameplay.png?raw=true "game play screen")
-![Alt text](Screenshoot/gameplay2.png?raw=true "game play screen 2")
+
+gameplay debugging screenshoot: </br>
+![Alt text](Screenshoot/gameplay2.png?raw=true "debugging game play screen")
 
 ``` 
 Kevin Haryo Kuncoro
