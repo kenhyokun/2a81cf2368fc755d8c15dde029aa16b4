@@ -49,20 +49,21 @@ public class Main : MonoBehaviour
 	P4
     }
 
-    enum ActState{ // action state -> what we do on one turn...
-	ACT_THROW,
-	ACT_PASS,
-	ACT_END
-    }
+    // enum ActState{ // action state -> what we do on one turn...
+    // 	ACT_THROW,
+    // 	ACT_PASS,
+    // 	ACT_END
+    // }
 
     enum SetState{ // card set state
+	NUN,
 	SINGLE,
 	PAIR,
 	TRIPLE
     }
 
     int turn_state;
-    ActState act_state;
+    // ActState act_state;
     List<Card> card_deck = new List<Card>();
 
     public Player p1 {set; get;}
@@ -357,11 +358,13 @@ public class Main : MonoBehaviour
 	}
     }
 
-    void ThrowCardToTable(int selected_count, int curr_card_value){
+    void ClearPointChild(){
 	for(int i = 0; i < point.transform.childCount; i++){
 	    Destroy(point.transform.GetChild(i).gameObject);
 	}
-
+    }
+    void ThrowCardToTable(int selected_count, int curr_card_value){
+	ClearPointChild();
 	card_value_on_table = curr_card_value;
 
 	if(selected_count == 1){
@@ -401,6 +404,7 @@ public class Main : MonoBehaviour
 
 	RemoveCardOnHand(player_turn, selected_count);
 	player_selected_card_list.Clear();
+	last_player_thrower = player_turn;
 	NextTurn();
     }
 
@@ -459,7 +463,7 @@ public class Main : MonoBehaviour
 		}
 	    }
 	    else{
-		is_on_set = false;
+		 is_on_set = false;
 	    }
  
 
@@ -474,7 +478,7 @@ public class Main : MonoBehaviour
 
 	    */
 
-	    if(is_first_run){
+	    if(is_on_set && is_first_run){
 		set_state_on_table = set_state;
 		is_first_run = false;
 	    }
@@ -503,6 +507,22 @@ public class Main : MonoBehaviour
 
 
 
+    } 
+    public void Reset(){ // just in case need reset button
+	for(int i = 0; i < player_selected_card_list.Count; i++){
+
+	    player_selected_card_list[i].transform.position =
+		player_selected_card_list[i].
+		GetComponent<Card_Game_Object>().start_position;
+
+	    player_selected_card_list[i].
+		GetComponent<Card_Game_Object>().is_selected = false;
+	}
+    }
+    public void Pass(){
+	Reset();
+	player_selected_card_list.Clear();
+	NextTurn();
     }
     // event handler on mouse click
     
@@ -565,6 +585,30 @@ public class Main : MonoBehaviour
 	player_turn = p1;
     }
 
+    bool IsEndLoop(){
+	if(last_player_thrower != null &&
+	   last_player_thrower.player_tag == player_turn.player_tag){
+	    return true;
+	}
+	return false;
+    }
+
+    void ResetTable(){
+	card_value_on_table = 0;
+	set_state_on_table = (int)SetState.NUN;
+	ClearPointChild();
+	set_panel.Hide();
+	is_first_run = true;
+    }
+
+    void CheckResetTable(){
+	if(!is_first_run){
+	    if(IsEndLoop()){
+		ResetTable();
+	    }
+	}
+    }
+
     void Update(){
 
 	Debug.Log("turn state:" + turn_state);
@@ -572,15 +616,19 @@ public class Main : MonoBehaviour
 	switch(turn_state){
 	    case (int)TurnState.P1:
 		player_turn = p1;
+		CheckResetTable();
 		break;
 	    case (int)TurnState.P2:
 		player_turn = p2;
+		CheckResetTable();
 		break;
 	    case (int)TurnState.P3:
 		player_turn = p3;
+		CheckResetTable();
 		break;
 	    case (int)TurnState.P4:
 		player_turn = p4;
+		CheckResetTable();
 		break;
 	}
     }

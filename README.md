@@ -27,11 +27,7 @@ some screenshoot: </br>
 ![Alt text](Screenshoot/avatarselection.png?raw=true "avatar selection screen")
 ![Alt text](Screenshoot/gameplay.png?raw=true "game play screen")
 
-<<<<<<< HEAD
-gameplay debugging screenshoot: </br>
-=======
 debugging screenshoot: </br>
->>>>>>> 1f1d251abad4a2eeac1097f20269448541f21f65
 ![Alt text](Screenshoot/gameplay2.png?raw=true "debugging game play screen")
 
 ``` 

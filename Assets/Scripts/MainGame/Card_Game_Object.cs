@@ -24,7 +24,7 @@ public class Card_Game_Object : MonoBehaviour
     public Card card_data {set; get;}
     public int index_on_hand;
     public int index_on_selected_list;
-    Vector3 start_position;
+    public Vector3 start_position;
     public Player card_owner {set; get;}
     public bool is_submited {set; get;}
     public int arrange_orientation {set; get;} // 0 = horizontal, 1 = vertical

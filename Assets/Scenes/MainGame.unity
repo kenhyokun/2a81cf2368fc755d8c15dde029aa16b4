@@ -662,6 +662,7 @@ MonoBehaviour:
   is_selected: 0
   index_on_hand: 0
   index_on_selected_list: 0
+  start_position: {x: 0, y: 0, z: 0}
 --- !u!61 &605103646
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1667,7 +1668,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1350874268}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 874748259}
+        m_MethodName: Pass
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1350874268
 MonoBehaviour:
   m_ObjectHideFlags: 0
