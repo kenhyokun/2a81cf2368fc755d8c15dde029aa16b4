@@ -76,6 +76,8 @@ public class Main : MonoBehaviour
     string photo_str;
     GameObject point; // submited card position
 
+    int curr_value_on_table;
+
     public static Main GetMain(){ // static function to get main component from main game object, so we dont need create main instance on other script/class when we need it
 	return GameObject.Find("Main").GetComponent<Main>();
     }
@@ -181,6 +183,10 @@ public class Main : MonoBehaviour
 	    card_inst.GetComponent<Card_Game_Object>().card_owner = player;
 	    card_inst.GetComponent<Card_Game_Object>().index_on_hand = i;
 
+	    if(offset_x < 0.7f){
+		card_inst.GetComponent<Card_Game_Object>().arrange_orientation = 1;
+	    }
+
 	    card_inst.GetComponent<Card_Game_Object>().
 		GetComponent<SpriteRenderer>().sortingOrder = i; 
 
@@ -207,7 +213,7 @@ public class Main : MonoBehaviour
 
 	    if(curr_count == 0){
 
-		Debug.Log(curr_count);
+		// Debug.Log(curr_count);
 
 		start_index = curr_count;
 		last_index = curr_count;
@@ -217,7 +223,7 @@ public class Main : MonoBehaviour
 
 		if(last_value == curr_value){
 
-		    Debug.Log(curr_count);
+		    // Debug.Log(curr_count);
 
 		    last_index = curr_count;
 		    CheckCardOnHand(player, curr_count + 1, curr_value); 
@@ -227,9 +233,9 @@ public class Main : MonoBehaviour
 		    int card_set = last_index - start_index + 1;
 		    player.SetCardSet(card_set, start_index, last_index);
 
-		    Debug.Log(curr_count);
+		    // Debug.Log(curr_count);
 
-		    Debug.Log(start_index + " " + last_index + " -> " + card_set);
+		    // Debug.Log(start_index + " " + last_index + " -> " + card_set);
 
 		    start_index = curr_count;
 		    last_index = curr_count;
@@ -247,17 +253,17 @@ public class Main : MonoBehaviour
 	    int card_set = last_index - start_index + 1;
 	    player.SetCardSet(card_set, start_index, last_index);
 
-	    Debug.Log(curr_count);
+	    // Debug.Log(curr_count);
 
-	    Debug.Log(start_index + " " + last_index + " -> " + card_set);
+	    // Debug.Log(start_index + " " + last_index + " -> " + card_set);
 
 	    start_index = 0;
 	    last_index = 0;
 
-	    Debug.Log("total card set " + player.GetTotalCardSet());
-	    Debug.Log("single card set " + player.single_set_list.Count);
-	    Debug.Log("pair card set " + player.pair_set_list.Count);
-	    Debug.Log("triple card set " + player.triple_set_list.Count);
+	    // Debug.Log("total card set " + player.GetTotalCardSet());
+	    // Debug.Log("single card set " + player.single_set_list.Count);
+	    // Debug.Log("pair card set " + player.pair_set_list.Count);
+	    // Debug.Log("triple card set " + player.triple_set_list.Count);
 	}
 
     }
@@ -294,14 +300,14 @@ public class Main : MonoBehaviour
 	if(curr_count < max_count - 1){
 	    if(curr_count == 0){
 
-		Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
+		// Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
 
 		IsOnSet(max_count, curr_count + 1, curr_value);
 
 	    }
 	    else{
 
-		Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
+		// Debug.Log(curr_count + ", " + (max_count - 1).ToString() + " -> " + curr_value);
 
 		if(last_value == curr_value){
 		    IsOnSet(max_count, curr_count + 1, curr_value);
@@ -311,13 +317,13 @@ public class Main : MonoBehaviour
 	}  
 	else{
 
-	    Debug.Log(curr_count + ", " + max_count + " -> " + last_value + ", " + curr_value);
+	    // Debug.Log(curr_count + ", " + max_count + " -> " + last_value + ", " + curr_value);
 	     if(last_value == curr_value){
-	     	Debug.Log("on set...");
+	     	// Debug.Log("on set...");
 		is_on_set = true;
 	     }
 	     else{
-	     	Debug.Log("not on set...");
+	     	// Debug.Log("not on set...");
 		is_on_set = false;
 	     }
 	}
@@ -386,8 +392,27 @@ public class Main : MonoBehaviour
 		    }
 
 		}
-		
+	    } // submited card position
+
+	    // removing player card on hand
+	    for(int i = 0; i < selected_count; i++){
+		player_selected_card_list[i].transform.parent = point.transform; // set parent to point. when we dont need this card object, we just destroy all point child 
+		Card_Game_Object temp_card = player_selected_card_list[i].GetComponent<Card_Game_Object>();
+		temp_card.card_owner.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
 	    }
+
+	    // reset card game object index on hand
+	    for(int i = 0; i < p1_deck.transform.childCount; i++){
+		Debug.Log(p1_deck.transform.GetChild(i).GetComponent<Card_Game_Object>().card_data.card_name);
+		p1_deck.transform.GetChild(i).GetComponent<Card_Game_Object>().index_on_hand = i;
+	    }
+
+	    // remove testing
+	    for(int i = 0; i < point.transform.childCount; i++){
+		Destroy(point.transform.GetChild(i).gameObject);
+	    }
+	    player_selected_card_list.Clear();
+	    // remove testing
 
 
 	} // selected count > 0

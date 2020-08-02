@@ -22,11 +22,12 @@ public class Card_Game_Object : MonoBehaviour
     public bool is_open; // if false, card game object sprite image = card_back
     public bool is_selected;
     public Card card_data {set; get;}
-    public int index_on_hand {set; get;}
+    public int index_on_hand;
     public int index_on_selected_list;
     Vector3 start_position;
     public Player card_owner {set; get;}
     public bool is_submited {set; get;}
+    public int arrange_orientation {set; get;} // 0 = horizontal, 1 = vertical
 
     void Start(){
         sprite_renderer = GetComponent<SpriteRenderer>();
@@ -80,10 +81,20 @@ public class Card_Game_Object : MonoBehaviour
 	    if(!is_submited){
 		if(!is_selected){
 
-		    transform.position =
-			new Vector3(transform.position.x,
-				    transform.position.y + 0.3f,
-				    transform.position.z);
+		    switch(arrange_orientation){
+			case 0: // horizontal
+			    transform.position =
+				new Vector3(transform.position.x,
+					    transform.position.y + 0.3f,
+					    transform.position.z);
+			    break;
+			case 1: // vertical
+			    transform.position =
+				new Vector3(transform.position.x - 0.3f,
+					    transform.position.y,
+					    transform.position.z);
+			    break;
+		    } // switch case
 
 		    Main.GetMain().AddCardToSelectionList(gameObject);
 
@@ -96,6 +107,6 @@ public class Card_Game_Object : MonoBehaviour
 		}
 	    } // is_submited
 
-	} // tag = player_card
+	} // condition 
     }
 }
