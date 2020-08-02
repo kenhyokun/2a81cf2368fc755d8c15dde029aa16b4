@@ -660,6 +660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   is_open: 0
   is_selected: 0
+  index_on_hand: 0
   index_on_selected_list: 0
 --- !u!61 &605103646
 BoxCollider2D:
@@ -1011,7 +1012,7 @@ GameObject:
   m_Component:
   - component: {fileID: 803086214}
   m_Layer: 5
-  m_Name: Gui Panel
+  m_Name: GUI Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2549,6 +2550,7 @@ GameObject:
   - component: {fileID: 2100405785}
   - component: {fileID: 2100405787}
   - component: {fileID: 2100405786}
+  - component: {fileID: 2100405788}
   m_Layer: 5
   m_Name: SetPanel
   m_TagString: Untagged
@@ -2573,8 +2575,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -212.3, y: -28.25}
-  m_SizeDelta: {x: 446.1, y: 56.5}
+  m_AnchoredPosition: {x: 90, y: -505.4}
+  m_SizeDelta: {x: 446.1, y: 53.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2100405786
 MonoBehaviour:
@@ -2612,6 +2614,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2100405784}
   m_CullTransparentMesh: 0
+--- !u!114 &2100405788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100405784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ce0a36e5c7a2dde9bd547725ec94608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2104446692
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,7 +2669,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b130bb60d6e521c38b355c83139a834f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  select_all_card: 0
+  is_all_card_open: 0
+  is_select_all_card: 0
 --- !u!1 &2116002320
 GameObject:
   m_ObjectHideFlags: 0

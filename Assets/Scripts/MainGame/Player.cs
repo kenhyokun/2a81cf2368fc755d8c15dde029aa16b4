@@ -15,6 +15,7 @@ public class Player
 
     public List<Card> card_on_hand = new List<Card>();
     public string player_name {set; get;}
+    public string player_tag {set; get;}
 
     /*
       NOTE [Kevin]: this thingies contain player card set. 
@@ -31,7 +32,8 @@ public class Player
     public Texture win_photo_texture;
     public Texture lose_photo_texture;
 
-    public Player(string _player_name, string photo_str){
+    public Player(string _player_tag, string _player_name, string photo_str){
+	player_tag = _player_tag;
 	player_name = _player_name;
 	SetPhotoTexture(photo_str);
     }

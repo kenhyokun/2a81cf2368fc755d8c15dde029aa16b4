@@ -63,6 +63,7 @@ public class Main : MonoBehaviour
     public Player p2 {set; get;}
     public Player p3 {set; get;}
     public Player p4 {set; get;}
+    Player player_turn;
 
     public GameObject card_game_object;
     public GameObject p1_deck;
@@ -75,6 +76,7 @@ public class Main : MonoBehaviour
 
     string photo_str;
     GameObject point; // submited card position
+    SetPanel set_panel;
 
     int curr_value_on_table;
 
@@ -331,19 +333,53 @@ public class Main : MonoBehaviour
     }
 
 
+    void RemoveCardOnHand(Player player, int selected_count){ // removing player card on hand
+
+	GameObject deck = null;
+
+	if(player.player_tag == "p1"){
+	    deck = p1_deck;
+	}
+	else if(player.player_tag == "p2"){
+	    deck = p2_deck;
+	}
+	else if(player.player_tag == "p3"){
+	    deck = p3_deck;
+	}
+	else if(player.player_tag == "p4"){
+	    deck = p4_deck;
+	}
+
+	// removing player card on hand
+	for(int i = 0; i < selected_count; i++){
+	    player_selected_card_list[i].transform.parent = point.transform; // set parent to point. when we dont need this card object, we just destroy all point child 
+	    Card_Game_Object temp_card = player_selected_card_list[i].GetComponent<Card_Game_Object>();
+	    temp_card.card_owner.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
+
+	    // reset card game object index on hand
+	    for(int j = 0; j < deck.transform.childCount; j++){
+		deck.transform.GetChild(j).GetComponent<Card_Game_Object>().index_on_hand = j;
+	    }
+
+	}
+    }
+
     // event handler on mouse click
     public void SubmitCard(){
 
 	int selected_count = player_selected_card_list.Count;
+
 	if(selected_count > 0){
 
 	    if(selected_count == 1){
 		Debug.Log("single");
+		set_panel.Show();
 	    }
 	    else if(selected_count == 2){
 		IsOnSet(2);
 		if(is_on_set){
 		    Debug.Log("pair");
+		    set_panel.Show(2);
 		}
 		else{
 		    Debug.Log("just nothing...");
@@ -353,6 +389,7 @@ public class Main : MonoBehaviour
 		IsOnSet(3);
 		if(is_on_set){
 		    Debug.Log("triples");
+		    set_panel.Show(3);
 		}
 		else{
 		    Debug.Log("just nothing...");
@@ -394,31 +431,17 @@ public class Main : MonoBehaviour
 		}
 	    } // submited card position
 
-	    // removing player card on hand
-	    for(int i = 0; i < selected_count; i++){
-		player_selected_card_list[i].transform.parent = point.transform; // set parent to point. when we dont need this card object, we just destroy all point child 
-		Card_Game_Object temp_card = player_selected_card_list[i].GetComponent<Card_Game_Object>();
-		temp_card.card_owner.card_on_hand.RemoveAt(temp_card.index_on_hand); // removing player card on hand
-	    }
-
-	    // reset card game object index on hand
-	    for(int i = 0; i < p1_deck.transform.childCount; i++){
-		Debug.Log(p1_deck.transform.GetChild(i).GetComponent<Card_Game_Object>().card_data.card_name);
-		p1_deck.transform.GetChild(i).GetComponent<Card_Game_Object>().index_on_hand = i;
-	    }
-
-	    // remove testing
-	    for(int i = 0; i < point.transform.childCount; i++){
-		Destroy(point.transform.GetChild(i).gameObject);
-	    }
-	    player_selected_card_list.Clear();
-	    // remove testing
-
+	    RemoveCardOnHand(p1, selected_count);
+	    
+	    // // remove testing
+	    // for(int i = 0; i < point.transform.childCount; i++){
+	    // 	Destroy(point.transform.GetChild(i).gameObject);
+	    // }
+	    // player_selected_card_list.Clear();
+	    // // remove testing
 
 	} // selected count > 0
 
-	// player_selected_card_list[0].GetComponent<Card_Game_Object>().DestroyCard();
-	// player_selected_card_list.RemoveAt(0);
     }
     // event handler on mouse click
     
@@ -438,14 +461,16 @@ public class Main : MonoBehaviour
 		break;
 	}
 
-	p1 = new Player("Player", photo_str);
-	p2 = new Player("COM1", "joe");
-	p3 = new Player("COM2", "seto");
-	p4 = new Player("COM3", "ryo");
+	p1 = new Player("p1", "Player", photo_str);
+	p2 = new Player("p2", "COM1", "joe");
+	p3 = new Player("p3", "COM2", "seto");
+	p4 = new Player("p4", "COM3", "ryo");
 
     }
     
     void Start(){
+
+	set_panel = GameObject.Find("Canvas/GUI Panel/SetPanel").GetComponent<SetPanel>();
 
 	card_game_object = GameObject.Find("CardGameObject");
 	p1_deck = GameObject.Find("Player1Deck");
